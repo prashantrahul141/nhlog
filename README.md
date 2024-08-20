@@ -3,9 +3,21 @@
 An extremely simple logging library for C/C++ with colors.
 
 # Installation
+
 Just include the two files `nhlog.h` and `nhlog.c` with your project files and make sure to compile and link them with your project and it just works.
 
+If you're using cmake to generate build files, make sure to override language property of the `nhlog.c` file to `CXX`:
+
+```cmake
+# nhlog.c and your sources
+file(GLOB SOURCES src/external/nhlog.c src/main.c ...)
+
+# THIS IS IMPORTANT!!
+set_source_files_properties(src/external/nhlog.c PROPERTIES LANGUAGE CXX)
+```
+
 # Usage
+
 ```c
 #include "nhlog.h"
 int main() {
@@ -27,14 +39,16 @@ int main() {
   nhlog_error("this will get printed.");
 }
 ```
+
 this outputs:
 
 ![demo](./meta/demo.png)
 
-
 # Why?
+
 Because every other C/C++ logging library is either
+
 - overly complicated for small projects
 - doesn't support both c and c++
-- doesn't have colors 
+- doesn't have colors
 - doesn't have simple api
