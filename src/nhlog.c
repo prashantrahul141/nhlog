@@ -46,6 +46,8 @@ void nhlog_set_level(int level) { LoggerState.level = level; }
 void nhlog_log(int level, const char *file, int line, const char *fmt, ...) {
   time_t t = time(NULL);
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
   LogEvent event = {
       .fmt = fmt,
       .file = file,
@@ -54,6 +56,8 @@ void nhlog_log(int level, const char *file, int line, const char *fmt, ...) {
       .line = line,
       .level = level,
   };
+
+#pragma GCC diagnostic pop
 
   if (level >= LoggerState.level) {
     va_start(event.ap, fmt);
