@@ -39,7 +39,7 @@ static void nhlog_stdout(LogEvent *event) {
 
 static struct {
   int level;
-} LoggerState = {.level = 0};
+} LoggerState = {.level = NHLOG_INFO};
 
 void nhlog_set_level(int level) { LoggerState.level = level; }
 

@@ -19,7 +19,8 @@ enum LogLevel {
   NHLOG_INFO,
   NHLOG_WARN,
   NHLOG_ERROR,
-  NHLOG_FATAL
+  NHLOG_FATAL,
+  NHLOG_OFF
 };
 
 void nhlog_set_level(int level);
