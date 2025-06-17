@@ -2,11 +2,12 @@
 
 An extremely simple logging library for C/C++ with colors.
 
+![demo](./meta/demo.png)
+
 # Installation
 
 Just include the two files `nhlog.h` and `nhlog.c` with your project files and make sure to compile and link them with your project and it just works.
 
-```
 
 # Usage
 
@@ -57,10 +58,6 @@ int main() {
   return 0;
 }
 ```
-
-this outputs:
-
-![demo](./meta/demo.png)
 
 # Why?
 
