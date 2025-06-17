@@ -18,7 +18,7 @@ static struct {
   // current logging level
   int level;
   // file stream to write to
-  void *fd;
+  FILE *fd;
 } logger_state;
 
 static void nhlog_stdout(LogEvent *event) {
@@ -50,14 +50,14 @@ static void nhlog_stdout(LogEvent *event) {
   fflush(event->udata);
 }
 
-void nhlog_init(LogLevel level, void *outstream) {
+void nhlog_init(LogLevel level, FILE *outstream) {
   logger_state.level = level;
   logger_state.fd = NULL == outstream ? stderr : outstream;
 }
 
 void nhlog_set_level(LogLevel level) { logger_state.level = level; }
 
-void nhlog_set_outstream(void *fd) {
+void nhlog_set_outstream(FILE *fd) {
   logger_state.fd = NULL == fd ? stderr : fd;
 }
 

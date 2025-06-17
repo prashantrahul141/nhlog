@@ -6,6 +6,7 @@ extern "C" {
 #endif // __cplusplus
 
 #include <stdarg.h>
+#include <stdio.h>
 
 /*
  * Internal representation of a log event.
@@ -20,7 +21,7 @@ typedef struct {
   // time of the event
   struct tm *time;
   // the stream to write to
-  void *udata;
+  FILE *udata;
   // at which line number it originated
   int line;
   // level of the event
@@ -46,7 +47,7 @@ typedef enum {
  * @param level - logging level
  * @param outstream - where to write to, stderr will be used if given NULL.
  */
-void nhlog_init(LogLevel level, void *outstream);
+void nhlog_init(LogLevel level, FILE *outstream);
 
 /*
  * Sets the logging level
@@ -58,7 +59,7 @@ void nhlog_set_level(LogLevel level);
  * Sets the logging out stream
  * @param fd - pointer to file stream, stderr will be used if given NULL.
  */
-void nhlog_set_outstream(void *fd);
+void nhlog_set_outstream(FILE *fd);
 
 void nhlog_log(LogLevel level, const char *file, int line, const char *fmt,
                ...);
