@@ -1,49 +1,68 @@
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
 #include "nhlog.h"
 
-const char *level_strings[] = {"TRACE", "DEBUG", "INFO",
-                               "WARN",  "ERROR", "FATAL"};
+static const char *level_strings[] = {"TRACE", "DEBUG", "INFO",
+                                      "WARN",  "ERROR", "FATAL"};
 
-const char *level_colors[] = {"\x1b[94m", "\x1b[36m", "\x1b[32m",
-                              "\x1b[33m", "\x1b[31m", "\x1b[35m"};
+static const char *level_colors[] = {"\x1b[94m", "\x1b[36m", "\x1b[32m",
+                                     "\x1b[33m", "\x1b[31m", "\x1b[35m"};
 
-#ifdef __cplusplus
-#include <cstdio>
-#include <iostream>
-#else
+#include <stdbool.h>
 #include <stdio.h>
 #include <time.h>
-#endif
+
+static struct {
+  // current logging level
+  int level;
+  // file stream to write to
+  void *fd;
+} logger_state;
 
 static void nhlog_stdout(LogEvent *event) {
   char time_buffer[16];
   time_buffer[strftime(time_buffer, sizeof(time_buffer), "%H:%M:%S",
                        event->time)] = '\0';
 
-#ifdef __cplusplus
-  std::printf("%s %s%-5s\x1b[0m \x1b[90m%s:%d:\x1b[0m ", time_buffer,
-              level_colors[event->level], level_strings[event->level],
-              event->file, event->line);
+  bool is_file = !(stdout == event->udata || stderr == event->udata);
+  // if its not a file output with colors
+  if (!is_file) {
+    fprintf(event->udata, "%s %s%-5s\x1b[0m \x1b[90m%s:%d:\x1b[0m %s",
+            time_buffer, level_colors[event->level],
+            level_strings[event->level], event->file, event->line,
+            level_colors[event->level]);
+  } else {
+    fprintf(event->udata, "%s %-5s %s:%d: ", time_buffer,
+            level_strings[event->level], event->file, event->line);
+  }
 
-  std::vsprintf((char *)event->udata, event->fmt, event->ap);
-  std::printf((const char *)event->udata, "\n\x1b[0m");
-  std::printf("\n");
-#else
-  fprintf(event->udata, "%s %s%-5s\x1b[0m \x1b[90m%s:%d:\x1b[0m %s",
-          time_buffer, level_colors[event->level], level_strings[event->level],
-          event->file, event->line, level_colors[event->level]);
   vfprintf(event->udata, event->fmt, event->ap);
-  fprintf(event->udata, "\n\x1b[0m");
+
+  if (!is_file) {
+    // if its not a file output with colors
+    fprintf(event->udata, "\n\x1b[0m");
+  } else {
+    fprintf(event->udata, "\n");
+  }
+
   fflush(event->udata);
-#endif
 }
 
-static struct {
-  int level;
-} LoggerState = {.level = NHLOG_INFO};
+void nhlog_init(LogLevel level, void *outstream) {
+  logger_state.level = level;
+  logger_state.fd = NULL == outstream ? stderr : outstream;
+}
 
-void nhlog_set_level(int level) { LoggerState.level = level; }
+void nhlog_set_level(LogLevel level) { logger_state.level = level; }
 
-void nhlog_log(int level, const char *file, int line, const char *fmt, ...) {
+void nhlog_set_outstream(void *fd) {
+  logger_state.fd = NULL == fd ? stderr : fd;
+}
+
+void nhlog_log(LogLevel level, const char *file, int line, const char *fmt,
+               ...) {
   time_t t = time(NULL);
 
 #pragma GCC diagnostic push
@@ -52,16 +71,19 @@ void nhlog_log(int level, const char *file, int line, const char *fmt, ...) {
       .fmt = fmt,
       .file = file,
       .time = localtime(&t),
-      .udata = stderr,
+      .udata = logger_state.fd,
       .line = line,
       .level = level,
   };
-
 #pragma GCC diagnostic pop
 
-  if (level >= LoggerState.level) {
+  if (level >= logger_state.level) {
     va_start(event.ap, fmt);
     nhlog_stdout(&event);
     va_end(event.ap);
   }
 }
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
