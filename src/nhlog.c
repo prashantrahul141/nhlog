@@ -57,6 +57,8 @@ void nhlog_init(LogLevel level, FILE *outstream) {
 
 void nhlog_set_level(LogLevel level) { logger_state.level = level; }
 
+LogLevel nhlog_get_level(void) { return logger_state.level; }
+
 void nhlog_set_outstream(FILE *fd) {
   logger_state.fd = NULL == fd ? stderr : fd;
 }

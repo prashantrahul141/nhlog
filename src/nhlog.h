@@ -56,6 +56,12 @@ void nhlog_init(LogLevel level, FILE *outstream);
 void nhlog_set_level(LogLevel level);
 
 /*
+ * Retrieve current logging level
+ * @returns Current logging level
+ */
+LogLevel nhlog_get_level(void);
+
+/*
  * Sets the logging out stream
  * @param fd - pointer to file stream, stderr will be used if given NULL.
  */
