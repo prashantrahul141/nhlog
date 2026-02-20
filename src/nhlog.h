@@ -11,6 +11,19 @@ extern "C" {
 #include <stdio.h>
 
 /*
+ * Dynamically setting logging level to OFF can be used to disable logging at
+ * runtime. This will disable logging, but it will have some overhead as it will
+ * check level of each logging event.
+ *
+ * However, you can disable logging at compile time by defining NHLOG_DISABLE.
+ * This results in log macros (like TRACE, DEBUG) generating empty statements,
+ * which will be stripped out of the compiler.
+ *
+ */
+
+// #define NHLOG_DISABLE
+
+/*
  * Different log levels
  */
 typedef enum : uint8_t {
@@ -98,15 +111,24 @@ bool nhlog_get_immediate(void);
 void nhlog_log(LogLevel level, const char *file, size_t line, const char *fmt,
                ...);
 
+#ifndef NHLOG_DISABLE
 #define TRACE(...) nhlog_log(NHLOG_TRACE, __FILE__, __LINE__, __VA_ARGS__)
 #define DEBUG(...) nhlog_log(NHLOG_DEBUG, __FILE__, __LINE__, __VA_ARGS__)
 #define INFO(...) nhlog_log(NHLOG_INFO, __FILE__, __LINE__, __VA_ARGS__)
 #define WARN(...) nhlog_log(NHLOG_WARN, __FILE__, __LINE__, __VA_ARGS__)
 #define ERROR(...) nhlog_log(NHLOG_ERROR, __FILE__, __LINE__, __VA_ARGS__)
 #define FATAL(...) nhlog_log(NHLOG_FATAL, __FILE__, __LINE__, __VA_ARGS__)
+#else
+#define TRACE(...)
+#define DEBUG(...)
+#define INFO(...)
+#define WARN(...)
+#define ERROR(...)
+#define FATAL(...)
+#endif
 
 #ifdef __cplusplus
-}
-#endif // __cplusplus
+} /* extern "C" */
+#endif /* __cplusplus */
 
-#endif
+#endif /* _NHLOG_H_ */

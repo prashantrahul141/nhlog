@@ -1,3 +1,6 @@
+/* all logging can be disabled completely at compile time by defining NHLOG_DISABLE, see nhlog.h */
+// #define NHLOG_DISABLE
+
 #include "../src/nhlog.h"
 
 int main() {

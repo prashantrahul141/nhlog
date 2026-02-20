@@ -12,6 +12,9 @@ Just include the two files `nhlog.h` and `nhlog.c` with your project files and m
 # Usage
 
 ```c
+/* all logging can be disabled completely at compile time by defining NHLOG_DISABLE, see nhlog.h */
+// #define NHLOG_DISABLE
+
 #include "nhlog.h"
 
 int main() {
