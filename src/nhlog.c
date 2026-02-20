@@ -65,7 +65,7 @@ static void nhlog_write(LogEvent *event) {
 }
 
 /* Getter and setter for level */
-void nhlog_set_level(LogLevel level) { logger_state.level = level; }
+void nhlog_set_level(const LogLevel level) { logger_state.level = level; }
 LogLevel nhlog_get_level(void) { return logger_state.level; }
 
 /* Getter and setter for output stream */
@@ -75,16 +75,16 @@ void nhlog_set_outstream(FILE *fd) {
 FILE *nhlog_get_outstream(void) { return logger_state.fd; }
 
 /* Getter and setter for output colors */
-void nhlog_set_output_colors(bool oc) { logger_state.output_colors = oc; }
+void nhlog_set_output_colors(const bool oc) { logger_state.output_colors = oc; }
 bool nhlog_get_output_colors(void) { return logger_state.output_colors; }
 
 /* Getter and setter for immediate */
-void nhlog_set_immediate(bool i) { logger_state.immediate = i; }
+void nhlog_set_immediate(const bool i) { logger_state.immediate = i; }
 bool nhlog_get_immediate(void) { return logger_state.immediate; }
 
-void nhlog_log(LogLevel level, const char *file, size_t line, const char *fmt,
-               ...) {
-  time_t t = time(NULL);
+void nhlog_log(LogLevel level, const char *file, const size_t line,
+               const char *fmt, ...) {
+  const time_t t = time(NULL);
   LogEvent event = {
       .ap = {0},
       .fmt = fmt,
@@ -103,5 +103,5 @@ void nhlog_log(LogLevel level, const char *file, size_t line, const char *fmt,
 }
 
 #ifdef __cplusplus
-} // extern "C"
-#endif
+} /* extern "C" */
+#endif /* __cplusplus */

@@ -38,9 +38,9 @@ typedef struct {
   // the stream to write to
   FILE *udata;
   // at which line number it originated
-  size_t line;
+  const size_t line;
   // level of the event
-  LogLevel level;
+  const LogLevel level;
 } LogEvent;
 
 /*
